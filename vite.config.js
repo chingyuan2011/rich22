@@ -15,7 +15,7 @@ export default defineConfig({
       }
     }
   },
-  base: '/',
+  base: '/rich22',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
