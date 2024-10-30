@@ -1108,6 +1108,24 @@ export const list = [
         identity: "工作家人",
         group: "0",
         pos: "000"
+    },
+    {
+        name: "許潓瑄",
+        identity: "組員",
+        group: "1",
+        pos: "000"
+    },
+    {
+        name: "劉淇橞",
+        identity: "組員",
+        group: "1",
+        pos: "000"
+    },
+    {
+        name: "許利榮",
+        identity: "組員",
+        group: "1",
+        pos: "000"
     }
 ]
 

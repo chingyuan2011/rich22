@@ -50,7 +50,7 @@ const getLeaderCard = ({ identity, name, group }) => {
     from: `${identity}大隊長`,
     toGroup: idToGroupNameMap[group],
     to: name,
-    content: `極致的${identity}隊長 ${name}\n很高興你這一期為戰隊挺身而出，在戰隊中積極的參與，帶領大家一起前進，期待未來的你，在不同場合能繼續發揮你的領導力，帶領大家一起前進。`,
+    content: `極致的${identity}隊長 ${name}\n很高興你這一期為戰隊挺身而出，在戰隊中積極的付出。\n期待未來的你，在不同場合能繼續發揮你的影響力，帶領大家一起前進。`,
   };
 };
 

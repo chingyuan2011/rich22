@@ -33,6 +33,7 @@ const cards = computed(() => {
         <input v-model="inputValue" />
         <button @click="search">查詢</button>
       </div>
+      <p class="searchNote">請輸入姓名和手機末3碼(例如：郭小哲123）</p>
       <p class="roleData" v-if="roleData">
         來自 {{ roleData.role.groupName }} 的 {{ roleData.role.name }} ，你好！
       </p>
@@ -96,8 +97,14 @@ h1 {
   display: flex;
   gap: 20px;
   font-size: 16px;
-  margin-bottom: 50px;
   align-items: center;
+  margin-bottom: 10px;
+}
+.searchNote {
+  font-size: 14px;
+  color: #b60614;
+  text-align: center;
+
 }
 
 button {
@@ -125,6 +132,7 @@ input {
   color: #333333;
 }
 .cards {
+  margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -156,6 +164,7 @@ p {
 .content {
   flex-grow: 1;
   overflow: auto;
+  white-space: pre-wrap;
 }
 .fromName {
   margin-top: 5px;
