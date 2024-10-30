@@ -1,56 +1,188 @@
 <script setup>
-import { onMounted } from "vue";
-import { storeToRefs } from "pinia";
+import { ref, computed } from "vue";
+import { get, isEmpty } from "lodash";
 import { useIndexStore } from "@/stores/index/index.js";
+
 const store = useIndexStore();
-const { data } = storeToRefs(store);
-onMounted(() => {});
+const { getRoleData } = store;
+const inputValue = ref("楊青原176");
+const roleData = ref(null);
+const search = () => {
+  roleData.value = getRoleData(inputValue.value);
+};
+
+const cards = computed(() => {
+  const _cards = get(roleData.value, "cards", null);
+  const defaultCards = get(roleData.value, "defaultCards", null);
+  return !isEmpty(_cards) ? _cards : !isEmpty(defaultCards) ? defaultCards : null
+});
 </script>
 
 <template>
-  <div>
-    <div class="searchBar">
-        <span>我是，</span>
-        <select>
-            <option>工作家人</option>
-            <option>第一戰隊</option>
-            <option>第二戰隊</option>
-            <option>第三戰隊</option>
-            <option>第四戰隊</option>
-        </select>
-        <input value="楊青原">
-        <button>查詢</button>
+  <div class="ThanksPage">
+    <div class="bg">
+      <div class="glass"></div>
     </div>
-    <div class="cards">
-      <div class="card" v-for="(item, idx) in data" :key="idx">
-        <span>{{ item.name }}</span>
-        <img :src="item.src" />
+    <div class="container">
+      <h1 class="matemasie-regular">
+        [影響力 22 班]
+        <br />
+        隊長群限定感恩活動
+      </h1>
+      <div class="searchBar">
+        <input :value="inputValue" />
+        <button @click="search">查詢</button>
       </div>
+      <p class="roleData">
+        來自 {{ roleData.role.groupName }} 的 {{ roleData.role.name }} ，你好！
+      </p>
+      <div class="cards" v-if="cards">
+        <div
+          class="card"
+          v-for="(item, idx) in cards"
+          :key="idx"
+          :style="{
+            backgroundImage: `url(imgs/card_bg${(idx % 5) + 1}.jpg)`,
+          }"
+        >
+          <div class="content">
+            <p>{{ item.content }}</p>
+          </div>
+          <p class="fromName">{{ item.from }}</p>
+        </div>
+      </div>
+      <div class="note" v-else>很抱歉！沒有找到你的小卡～</div>
     </div>
   </div>
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Matemasie&family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC:wght@200..900&display=swap");
+
+.ThanksPage {
+  width: 100%;
+  position: relative;
+  /* border: 10px solid rgb(100, 54, 60); */
+  /* padding: 20px 20px 400px 20px; */
+  padding-bottom: 200px;
+}
+.bg {
+  box-sizing: border-box;
+  z-index: -1;
+  background-color: rgb(248, 195, 205);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(/imgs/texture.png);
+}
+
+.container {
+  max-width: 830px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: "Noto Sans TC", sans-serif;
+  font-weight: 600;
+  color: #b60614;
+  text-align: center;
+  font-size: 30px;
+}
 
 .searchBar {
-    display: flex;
-    gap: 20px;
-    font-size: 16px;
-    margin-bottom: 50px;
-    align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+  font-size: 16px;
+  margin-bottom: 50px;
+  align-items: center;
 }
-select,
+
+button {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #ef7c8e;
+  border: 0px;
+  cursor: pointer;
+}
+
+.roleData{
+padding-bottom: 20px;
+font-weight: 700;
+font-size: 18px;
+  color: #b60614;
+}
 input {
-    padding: 5px;
-    font-size: 16px;
+  flex-grow: 1;
+  height: 32px;
+  padding: 5px;
+  font-size: 16px;
+  background-color: #fae8e0;
+  border: 0px;
+  color: #333333;
 }
 .cards {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 30px;
 }
+
 .card {
-  padding: 10px;
-  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  color: #666666;
+  text-align: left;
+  font-size: 16px;
+  /* 788 * 395 */
+  width: 400px;
+  height: 200px;
+  padding: 20px 160px 10px 20px;
+  border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.card:nth-child(even) {
+  transform: translateY(100px);
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+.content {
+  flex-grow: 1;
+  overflow: auto;
+}
+.fromName {
+  margin-top: 5px;
+  text-align: right;
+}
+
+.note {
+  padding: 50px 0;
+  font-size: 20px;
+  text-align: center;
+  color: #b60614;
+}
+
+@media (max-width: 960px) {
+  h1 {
+    font-size: 26px;
+  }
+  .container {
+    max-width: 330px;
+  }
+  .card {
+    width: 330px;
+    height: 170px;
+    padding-right: 120px;
+  }
+  .card:nth-child(even) {
+    transform: translateY(0px);
+  }
 }
 </style>

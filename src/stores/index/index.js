@@ -1,11 +1,13 @@
 import { onMounted, ref } from "vue";
 import { defineStore } from "pinia";
-import {cloneDeep} from 'lodash'
+import { cardHandler } from './process.js'
+
+// https://docs.google.com/spreadsheets/d/1Np4BAKjkspdUJI9QNKXCvRgojvvZGU4LdynWMHFOk3k/edit?resourcekey=&gid=1002593271#gid=1002593271
 
 const fetchData = async () => {
   const formState = {
     apiKey: "AIzaSyCZgrWUDYg4zJ2d9OwYn-MsfrgAv2nlLRQ",
-    sheetID: "19W9fHnHtguH3QZYH8RXjz3VWmle9GebisOcj31DINDo",
+    sheetID: "1Np4BAKjkspdUJI9QNKXCvRgojvvZGU4LdynWMHFOk3k",
     range: "表單回應 1",
   };
 
@@ -14,42 +16,24 @@ const fetchData = async () => {
   await fetch(url)
     .then((response) => response.json())
     .then((data) => {
-       fetchData = processData(data.values)
+      fetchData = data.values;
     })
     .catch((error) => console.error("Error:", error));
 
   return fetchData;
 };
-
-const processData = (data) => {
-  const result = [];
-  const cloneData = cloneDeep(data);
-  cloneData.shift();
-
-  cloneData.forEach((data) => {
-
-    result.push({
-      name: data[1],
-      src: processUrl(data[2])
-    });
-  });
-
-  return result;
-}
-
-const processUrl = (url) => {
-  const id = url.split("?id=")[1];
-  return `https://drive.google.com/thumbnail?id=${id}`
-}
-
 export const useIndexStore = defineStore("index", () => {
+  const personData = ref({});
   const data = ref([]);
+
+  const getRoleData = (value) =>  personData.value[value] || null
 
   onMounted(async () => {
     data.value = await fetchData();
+    personData.value = cardHandler(data.value);
   });
 
   return {
-    data
+    getRoleData
   }
 });
