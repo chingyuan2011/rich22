@@ -5,7 +5,7 @@ import { useIndexStore } from "@/stores/index/index.js";
 
 const store = useIndexStore();
 const { getRoleData } = store;
-const inputValue = ref("楊青原176");
+const inputValue = ref("");
 const roleData = ref(null);
 const search = () => {
   roleData.value = getRoleData(inputValue.value);
@@ -33,7 +33,7 @@ const cards = computed(() => {
         <input :value="inputValue" />
         <button @click="search">查詢</button>
       </div>
-      <p class="roleData">
+      <p class="roleData" v-if="roleData">
         來自 {{ roleData.role.groupName }} 的 {{ roleData.role.name }} ，你好！
       </p>
       <div class="cards" v-if="cards">
