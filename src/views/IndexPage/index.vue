@@ -30,7 +30,7 @@ const cards = computed(() => {
         隊長群限定感恩活動
       </h1>
       <div class="searchBar">
-        <input :value="inputValue" />
+        <input v-model="inputValue" />
         <button @click="search">查詢</button>
       </div>
       <p class="roleData" v-if="roleData">
