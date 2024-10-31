@@ -55,7 +55,7 @@ const cards = computed(() => {
       </div>
       <p class="note" v-else>輸入資訊開始查詢</p>
       <p class="group">
-        主辦：輕易豐盛學院<br />
+        主辦：輕易豐盛<br />
         指導成員：Ray、宥安、冬冬、汪汪<br />
         協作成員：小解、詠鈴、桔子、青原、鳳君、佩婷、喬涵
       </p>
