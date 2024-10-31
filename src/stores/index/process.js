@@ -1,57 +1,82 @@
-import { cloneDeep } from "lodash";
-import { list, groupNameToIdMap, idToGroupNameMap } from "./list.js";
+import { cloneDeep, set } from "lodash";
+import { groupNameToIdMap, idToGroupNameMap } from "./list.js";
 
-export const cardHandler = (cardsData) => {
+export const fetchData = async (formState) => {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${formState.sheetID}/values/${formState.range}?key=${formState.apiKey}`;
+  let fetchData = null;
+  await fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      fetchData = data.values;
+    })
+    .catch((error) => console.error("Error:", error));
+
+  return fetchData;
+};
+
+export const cardHandler = async (cardsData) => {
   const result = {};
-  const roleData = getRoleData();
+  const roleData = await getRoleData();
   classifyCards(roleData, cardsData);
 
   Object.entries(roleData).forEach(([key, value]) => {
-    const newKey = key+value.role.pos
+    const newKey = key + value.role.pos;
     result[newKey] = value;
-  })
+  });
   return result;
 };
 
-const getRoleData = () => {
+const getRoleData = async () => {
+  const formState = {
+    apiKey: "AIzaSyCZgrWUDYg4zJ2d9OwYn-MsfrgAv2nlLRQ",
+    sheetID: "1Np4BAKjkspdUJI9QNKXCvRgojvvZGU4LdynWMHFOk3k",
+    range: "本名對照表",
+  };
+  const originData = await fetchData(formState);
+  originData.shift();
+
+  const defaultCardState = {
+    apiKey: "AIzaSyCZgrWUDYg4zJ2d9OwYn-MsfrgAv2nlLRQ",
+    sheetID: "1Np4BAKjkspdUJI9QNKXCvRgojvvZGU4LdynWMHFOk3k",
+    range: "預設卡片",
+  };
+  const defaultCard = await fetchData(defaultCardState);
+  const defaultCardMap = {};
+  defaultCard.forEach((item) => {
+    defaultCardMap[item[0]] = {
+      fromGroup: "系統",
+      from: item[2],
+      toGroup: null,
+      to: null,
+      content: item[1],
+    };
+  });
+
+  const list = [];
+  originData.forEach((item) => {
+    list.push({
+      group: item[0],
+      name: item[1],
+      identity: item[2],
+      pos: item[3],
+    });
+  });
+
   const result = {};
   list.forEach((role) => {
-    result[role.name] = {
+    const obj = {
       role: {
         ...role,
         groupName: idToGroupNameMap[role.group],
       },
-      defaultCards: getDefaultCards(role),
       cards: [],
     };
+    obj.cards.push(defaultCardMap["所有人"]);
+    defaultCardMap[role.identity] && obj.cards.push(defaultCardMap[role.identity]);
+    result[role.name] = obj;
   });
 
   return result;
-};
-
-const getDefaultCards = (role) => {
-  const result = [];
-  const identity = role.identity;
-
-  if (
-    identity === "演練" ||
-    identity === "火焰" ||
-    identity === "自媒體" ||
-    identity === "目標"
-  )
-    result.push(getLeaderCard(role));
-
-  return result;
-};
-
-const getLeaderCard = ({ identity, name, group }) => {
-  return {
-    fromGroup: "",
-    from: `${identity}大隊長`,
-    toGroup: idToGroupNameMap[group],
-    to: name,
-    content: `極致的${identity}隊長 ${name}\n很高興你這一期為戰隊挺身而出，在戰隊中積極的付出。\n期待未來的你，在不同場合能繼續發揮你的影響力，帶領大家一起前進。`,
-  };
 };
 
 const classifyCards = (roleData, cardsData) => {
@@ -68,5 +93,4 @@ const classifyCards = (roleData, cardsData) => {
     const target = roleData[data.to];
     if (target) target.cards.push(data);
   });
-
 };

@@ -13,8 +13,9 @@ const search = () => {
 
 const cards = computed(() => {
   const _cards = get(roleData.value, "cards", null);
-  const defaultCards = get(roleData.value, "defaultCards", null);
-  return !isEmpty(_cards) ? _cards : !isEmpty(defaultCards) ? defaultCards : null
+  return !isEmpty(_cards)
+    ? _cards
+    :  null;
 });
 </script>
 
@@ -27,13 +28,13 @@ const cards = computed(() => {
       <h1 class="matemasie-regular">
         [影響力 22 班]
         <br />
-        隊長群限定感恩活動
+        畢業季感恩活動
       </h1>
       <div class="searchBar">
         <input v-model="inputValue" />
         <button @click="search">查詢</button>
       </div>
-      <p class="searchNote">請輸入姓名和手機末3碼(例如：郭小哲123）</p>
+      <p class="searchNote">請輸入姓名和手機末3碼(例如：楊大原123）</p>
       <p class="roleData" v-if="roleData">
         來自 {{ roleData.role.groupName }} 的 {{ roleData.role.name }} ，你好！
       </p>
@@ -41,7 +42,7 @@ const cards = computed(() => {
         <div
           class="card"
           v-for="(item, idx) in cards"
-          :key="idx"
+          :key="item.content"
           :style="{
             backgroundImage: `url(imgs/card_bg${(idx % 5) + 1}.jpg)`,
           }"
@@ -52,7 +53,12 @@ const cards = computed(() => {
           <p class="fromName">{{ item.from }}</p>
         </div>
       </div>
-      <div class="note" v-else>很抱歉！沒有找到你的小卡～</div>
+      <p class="note" v-else>輸入資訊開始查詢</p>
+      <p class="group">
+        主辦：輕易豐盛學院<br />
+        指導成員：Ray、宥安、冬冬、汪汪<br />
+        協作成員：小解、詠鈴、桔子、青原、鳳君、佩婷、喬涵
+      </p>
     </div>
   </div>
 </template>
@@ -65,7 +71,7 @@ const cards = computed(() => {
   position: relative;
   /* border: 10px solid rgb(100, 54, 60); */
   /* padding: 20px 20px 400px 20px; */
-  padding-bottom: 200px;
+  padding-bottom: 0px;
 }
 .bg {
   box-sizing: border-box;
@@ -101,10 +107,9 @@ h1 {
   margin-bottom: 10px;
 }
 .searchNote {
-  font-size: 14px;
+  font-size: 16px;
   color: #b60614;
   text-align: center;
-
 }
 
 button {
@@ -114,12 +119,14 @@ button {
   background-color: #ef7c8e;
   border: 0px;
   cursor: pointer;
+  color: #ffffff;
 }
 
-.roleData{
-padding-bottom: 20px;
-font-weight: 700;
-font-size: 18px;
+.roleData {
+  margin-top: 30px;
+  padding-bottom: 20px;
+  font-weight: 700;
+  font-size: 18px;
   color: #b60614;
 }
 input {
@@ -132,7 +139,6 @@ input {
   color: #333333;
 }
 .cards {
-  margin-top: 30px;
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
@@ -172,9 +178,15 @@ p {
 }
 
 .note {
-  padding: 50px 0;
-  font-size: 20px;
+  padding: 50px 0 50px;
+  font-size: 24px;
   text-align: center;
+  color: #b60614;
+}
+
+.group {
+  padding: 200px 0 50px;
+  font-size: 16px;
   color: #b60614;
 }
 
